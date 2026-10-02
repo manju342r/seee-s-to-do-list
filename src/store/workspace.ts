@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Task, Project, Page, AppNotification } from '@/types'
 
 interface WorkspaceState {
+  workspaceName: string
   tasks: Task[]
   projects: Project[]
   pages: Page[]
@@ -11,6 +12,7 @@ interface WorkspaceState {
   desktopNotificationAllowed: boolean
   
   // Actions
+  setWorkspaceName: (name: string) => void
   addTask: (task: Partial<Task>) => void
   updateTask: (id: string, updates: Partial<Task>) => void
   deleteTask: (id: string) => void
@@ -35,11 +37,14 @@ interface WorkspaceState {
 export const useWorkspaceStore = create<WorkspaceState>()(
   persist(
     (set) => ({
+      workspaceName: "Shruthe's Workspace",
       tasks: [],
       projects: [],
       pages: [],
       notifications: [],
       desktopNotificationAllowed: false,
+      
+      setWorkspaceName: (name) => set(() => ({ workspaceName: name })),
       
       addTask: (task) => set((state) => {
         const newTask: Task = {

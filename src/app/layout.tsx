@@ -3,8 +3,8 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 
 export const metadata: Metadata = {
-  title: 'Productivity App',
-  description: 'Notion + Todoist + Trello + Linear clone',
+  title: "Shruthe's Workspace",
+  description: 'Personal productivity & task-management workspace',
 }
 
 export default function RootLayout({

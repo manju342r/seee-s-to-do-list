@@ -71,11 +71,40 @@ export default function SettingsPage() {
     setTimeout(() => setTestSent(false), 3000)
   }
 
+  const workspaceName = useWorkspaceStore(state => state.workspaceName)
+  const setWorkspaceName = useWorkspaceStore(state => state.setWorkspaceName)
+
   return (
     <div className="max-w-4xl mx-auto p-8">
       <h1 className="text-3xl font-bold mb-8">Settings</h1>
       
       <div className="space-y-8">
+        {/* Workspace Profile */}
+        <section>
+          <h2 className="text-xl font-semibold mb-4 border-b border-border pb-2 flex items-center gap-2">
+            Workspace Profile
+          </h2>
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-card border border-border rounded-xl gap-4">
+              <div>
+                <div className="font-medium text-sm">Workspace Name</div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  Display name shown in the sidebar and document headers.
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={workspaceName || "Shruthe's Workspace"}
+                  onChange={(e) => setWorkspaceName(e.target.value)}
+                  className="px-3 py-1.5 bg-background border border-border rounded-lg text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  placeholder="Workspace Name"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Notifications & Reminders */}
         <section>
           <h2 className="text-xl font-semibold mb-4 border-b border-border pb-2 flex items-center gap-2">
