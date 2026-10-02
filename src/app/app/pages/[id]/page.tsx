@@ -17,7 +17,7 @@ export default function EditorPage() {
   
   const [title, setTitle] = useState(page?.title || '')
   const [blocks, setBlocks] = useState<Block[]>(page?.content || [{ id: crypto.randomUUID(), type: 'p', text: '' }])
-  const saveTimeout = useRef<NodeJS.Timeout>()
+  const saveTimeout = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => {
     if (page) {
