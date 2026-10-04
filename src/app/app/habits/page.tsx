@@ -3,18 +3,17 @@
 import { useState, useMemo } from 'react'
 import { Plus, Trash2, Edit2 } from 'lucide-react'
 import { useWorkspaceStore } from '@/store/workspace'
-import { format, subDays, eachDayOfInterval } from 'date-fns'
+import { format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns'
 
 export default function HabitsPage() {
   const { habits, habitLogs, addHabit, updateHabit, deleteHabit, toggleHabitLog } = useWorkspaceStore()
   const [isAdding, setIsAdding] = useState(false)
   const [newHabitName, setNewHabitName] = useState('')
 
-  // Generate the last 30 days
+  // Generate all days in the current month
   const days = useMemo(() => {
-    const end = new Date()
-    const start = subDays(end, 29)
-    return eachDayOfInterval({ start, end })
+    const now = new Date()
+    return eachDayOfInterval({ start: startOfMonth(now), end: endOfMonth(now) })
   }, [])
 
   const handleAddHabit = (e: React.FormEvent) => {
@@ -30,7 +29,7 @@ export default function HabitsPage() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight mb-2">Habit Tracker</h1>
-          <p className="text-muted-foreground">30 days habit tracker.</p>
+          <p className="text-muted-foreground">Monthly habit tracker.</p>
         </div>
         <button 
           onClick={() => setIsAdding(true)}
