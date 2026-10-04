@@ -1,17 +1,21 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
-import { Task, Project, Page, AppNotification } from '@/types'
+import { Task, Project, Page, AppNotification, Habit, HabitLog } from '@/types'
 
 interface WorkspaceState {
   workspaceName: string
   tasks: Task[]
   projects: Project[]
   pages: Page[]
+
   notifications: AppNotification[]
   desktopNotificationAllowed: boolean
+  habits: Habit[]
+  habitLogs: HabitLog[]
   
   // Actions
+
   setWorkspaceName: (name: string) => void
   addTask: (task: Partial<Task>) => void
   updateTask: (id: string, updates: Partial<Task>) => void
@@ -23,9 +27,16 @@ interface WorkspaceState {
   
   addPage: (page: Partial<Page>) => void
   updatePage: (id: string, updates: Partial<Page>) => void
+
   deletePage: (id: string) => void
   
+  addHabit: (habit: Partial<Habit>) => void
+  updateHabit: (id: string, updates: Partial<Habit>) => void
+  deleteHabit: (id: string) => void
+  toggleHabitLog: (habitId: string, dateStr: string) => void
+  
   // Notifications
+
   addNotification: (notification: Omit<AppNotification, 'id' | 'created_at' | 'read'>) => void
   markNotificationAsRead: (id: string) => void
   clearAllNotifications: () => void
@@ -40,9 +51,12 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       workspaceName: "Shruthe's Workspace",
       tasks: [],
       projects: [],
+
       pages: [],
       notifications: [],
       desktopNotificationAllowed: false,
+      habits: [],
+      habitLogs: [],
       
       setWorkspaceName: (name) => set(() => ({ workspaceName: name })),
       
@@ -128,9 +142,48 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         pages: state.pages.map(p => p.id === id ? { ...p, ...updates, updated_at: new Date().toISOString() } : p)
       })),
       
+
       deletePage: (id) => set((state) => ({
         pages: state.pages.map(p => p.id === id ? { ...p, is_trash: true, updated_at: new Date().toISOString() } : p)
       })),
+      
+      addHabit: (habit) => set((state) => {
+        const newHabit: Habit = {
+          id: uuidv4(),
+          workspace_id: 'default',
+          name: 'New Habit',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          ...habit
+        }
+        return { habits: [...state.habits, newHabit] }
+      }),
+      
+      updateHabit: (id, updates) => set((state) => ({
+        habits: state.habits.map(h => h.id === id ? { ...h, ...updates, updated_at: new Date().toISOString() } : h)
+      })),
+      
+      deleteHabit: (id) => set((state) => ({
+        habits: state.habits.filter(h => h.id !== id),
+        habitLogs: state.habitLogs.filter(l => l.habit_id !== id)
+      })),
+      
+      toggleHabitLog: (habitId, dateStr) => set((state) => {
+        const existing = state.habitLogs.find(l => l.habit_id === habitId && l.completed_date === dateStr);
+        if (existing) {
+          return { habitLogs: state.habitLogs.filter(l => l.id !== existing.id) }
+        } else {
+          return { 
+            habitLogs: [...state.habitLogs, {
+              id: uuidv4(),
+              habit_id: habitId,
+              completed_date: dateStr,
+              created_at: new Date().toISOString()
+            }] 
+          }
+        }
+      }),
+
       
       addNotification: (notif) => set((state) => ({
         notifications: [
@@ -197,6 +250,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               updated_at: new Date().toISOString(),
             }
           ],
+
           pages: [
             {
               id: uuidv4(),
@@ -210,7 +264,10 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               updated_at: new Date().toISOString(),
             }
           ],
-          notifications: []
+          notifications: [],
+          habits: [],
+          habitLogs: []
+
         }
       })
     }),

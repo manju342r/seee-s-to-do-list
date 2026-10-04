@@ -105,3 +105,27 @@ CREATE TRIGGER update_workspaces_modtime BEFORE UPDATE ON workspaces FOR EACH RO
 CREATE TRIGGER update_projects_modtime BEFORE UPDATE ON projects FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_tasks_modtime BEFORE UPDATE ON tasks FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_pages_modtime BEFORE UPDATE ON pages FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+-- Habits
+CREATE TABLE habits (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    workspace_id UUID REFERENCES workspaces(id) ON DELETE CASCADE NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT,
+    icon TEXT,
+    color TEXT,
+    created_by UUID,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Habit Logs
+CREATE TABLE habit_logs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    habit_id UUID REFERENCES habits(id) ON DELETE CASCADE NOT NULL,
+    completed_date DATE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE(habit_id, completed_date)
+);
+
+CREATE TRIGGER update_habits_modtime BEFORE UPDATE ON habits FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();

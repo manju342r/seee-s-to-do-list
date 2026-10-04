@@ -69,3 +69,22 @@ export type Page = {
   created_at: string
   updated_at: string
 }
+
+export type Habit = {
+  id: string
+  workspace_id: string
+  name: string
+  description?: string
+  icon?: string
+  color?: string
+  created_by?: string
+  created_at: string
+  updated_at: string
+}
+
+export type HabitLog = {
+  id: string
+  habit_id: string
+  completed_date: string // YYYY-MM-DD
+  created_at: string
+}

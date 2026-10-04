@@ -39,6 +39,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     { name: 'Today', href: '/app/today', icon: Calendar },
     { name: 'Upcoming', href: '/app/upcoming', icon: CalendarDays },
     { name: 'All Tasks', href: '/app/tasks', icon: CheckSquare },
+    { name: 'Habits', href: '/app/habits', icon: CheckSquare },
     { name: 'Trash', href: '/app/trash', icon: Trash2 },
   ]
 
