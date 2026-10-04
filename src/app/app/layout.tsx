@@ -24,14 +24,14 @@ import { useReminderNotifier } from '@/hooks/use-reminder-notifier'
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const pathname = usePathname()
-  const { tasks, projects, pages, workspaceName, seedData } = useWorkspaceStore()
+  const { tasks, projects, pages, habits, workspaceName, seedData } = useWorkspaceStore()
   const { activeToasts, dismissToast, requestDesktopPermission } = useReminderNotifier()
 
   useEffect(() => {
-    if (tasks.length === 0 && projects.length === 0 && pages.length === 0) {
+    if (tasks.length === 0 && projects.length === 0 && pages.length === 0 && habits.length === 0) {
       seedData()
     }
-  }, [tasks.length, projects.length, pages.length, seedData])
+  }, [tasks.length, projects.length, pages.length, habits.length, seedData])
 
   const navItems = [
     { name: 'Home', href: '/app', icon: Home },

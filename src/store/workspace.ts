@@ -264,9 +264,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               updated_at: new Date().toISOString(),
             }
           ],
-          notifications: [],
-          habits: [],
-          habitLogs: []
+          notifications: []
 
         }
       })
