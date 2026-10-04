@@ -52,10 +52,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="p-4 w-64">
           <div className="flex items-center gap-2.5 px-2 mb-6">
             <div className="w-7 h-7 rounded-lg bg-primary text-primary-foreground font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
-              {workspaceName ? workspaceName.charAt(0).toUpperCase() : 'S'}
+              {workspaceName ? workspaceName.charAt(0).toUpperCase() : 'H'}
             </div>
             <div className="font-semibold text-sm truncate">
-              {workspaceName || "Shruthe's Workspace"}
+              {workspaceName || "Habit Tracker"}
             </div>
           </div>
           

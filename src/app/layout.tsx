@@ -3,7 +3,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 
 export const metadata: Metadata = {
-  title: "Shruthe's Workspace",
+  title: "Habit Tracker",
   description: 'Personal productivity & task-management workspace',
 }
 

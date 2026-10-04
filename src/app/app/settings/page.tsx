@@ -95,7 +95,7 @@ export default function SettingsPage() {
               <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  value={workspaceName || "Shruthe's Workspace"}
+                  value={workspaceName || "Habit Tracker"}
                   onChange={(e) => setWorkspaceName(e.target.value)}
                   className="px-3 py-1.5 bg-background border border-border rounded-lg text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                   placeholder="Workspace Name"

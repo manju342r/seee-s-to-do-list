@@ -48,7 +48,7 @@ interface WorkspaceState {
 export const useWorkspaceStore = create<WorkspaceState>()(
   persist(
     (set) => ({
-      workspaceName: "Shruthe's Workspace",
+      workspaceName: "Habit Tracker",
       tasks: [],
       projects: [],
 
