@@ -28,6 +28,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { activeToasts, dismissToast, requestDesktopPermission } = useReminderNotifier()
 
   useEffect(() => {
+    if (workspaceName === "Shruthe's Workspace") {
+      useWorkspaceStore.getState().setWorkspaceName("Habit Tracker")
+    }
+  }, [workspaceName])
+
+  useEffect(() => {
     if (tasks.length === 0 && projects.length === 0 && pages.length === 0 && habits.length === 0) {
       seedData()
     }
