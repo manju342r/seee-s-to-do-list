@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Plus, Trash2, Edit2 } from 'lucide-react'
+import { Plus, Trash2, Edit2, Check, X } from 'lucide-react'
 import { useWorkspaceStore } from '@/store/workspace'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns'
 
@@ -9,6 +9,8 @@ export default function HabitsPage() {
   const { habits, habitLogs, addHabit, updateHabit, deleteHabit, toggleHabitLog } = useWorkspaceStore()
   const [isAdding, setIsAdding] = useState(false)
   const [newHabitName, setNewHabitName] = useState('')
+  const [editingHabitId, setEditingHabitId] = useState<string | null>(null)
+  const [editingHabitName, setEditingHabitName] = useState('')
 
   // Generate all days in the current month
   const days = useMemo(() => {
@@ -22,6 +24,14 @@ export default function HabitsPage() {
     addHabit({ name: newHabitName })
     setNewHabitName('')
     setIsAdding(false)
+  }
+
+  const handleSaveEdit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
+    if (!editingHabitName.trim() || !editingHabitId) return
+    updateHabit(editingHabitId, { name: editingHabitName })
+    setEditingHabitId(null)
+    setEditingHabitName('')
   }
 
   return (
@@ -50,14 +60,35 @@ export default function HabitsPage() {
                   {format(day, 'd')}
                 </th>
               ))}
-              <th className="px-4 py-3 font-medium text-muted-foreground text-right">Actions</th>
+              <th className="px-4 py-3 font-medium text-muted-foreground text-right min-w-[80px]">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {habits.map(habit => (
               <tr key={habit.id} className="hover:bg-muted/30 transition-colors">
                 <td className="px-4 py-3 font-medium">
-                  {habit.name}
+                  {editingHabitId === habit.id ? (
+                    <form onSubmit={handleSaveEdit} className="flex gap-2 items-center">
+                      <input 
+                        autoFocus
+                        type="text"
+                        className="flex-1 bg-background border border-input rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary w-[160px]"
+                        value={editingHabitName}
+                        onChange={e => setEditingHabitName(e.target.value)}
+                        onBlur={() => handleSaveEdit()}
+                      />
+                    </form>
+                  ) : (
+                    <span 
+                      onDoubleClick={() => {
+                        setEditingHabitId(habit.id)
+                        setEditingHabitName(habit.name)
+                      }}
+                      className="cursor-pointer"
+                    >
+                      {habit.name}
+                    </span>
+                  )}
                 </td>
                 {days.map((day, i) => {
                   const dateStr = format(day, 'yyyy-MM-dd')
@@ -82,12 +113,46 @@ export default function HabitsPage() {
                   )
                 })}
                 <td className="px-4 py-3 text-right">
-                  <button 
-                    onClick={() => deleteHabit(habit.id)}
-                    className="text-muted-foreground hover:text-destructive transition-colors p-1"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center justify-end gap-1">
+                    {editingHabitId === habit.id ? (
+                      <>
+                        <button 
+                          onMouseDown={(e) => { e.preventDefault(); handleSaveEdit(); }}
+                          className="text-green-500 hover:text-green-600 transition-colors p-1"
+                          title="Save"
+                        >
+                          <Check className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onMouseDown={(e) => { e.preventDefault(); setEditingHabitId(null); }}
+                          className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                          title="Cancel"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button 
+                          onClick={() => {
+                            setEditingHabitId(habit.id)
+                            setEditingHabitName(habit.name)
+                          }}
+                          className="text-muted-foreground hover:text-primary transition-colors p-1"
+                          title="Edit Habit"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => deleteHabit(habit.id)}
+                          className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                          title="Delete Habit"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -100,7 +165,7 @@ export default function HabitsPage() {
                       autoFocus
                       type="text" 
                       placeholder="e.g. Wake up 04:30" 
-                      className="flex-1 bg-background border border-input rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="flex-1 max-w-sm bg-background border border-input rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       value={newHabitName}
                       onChange={e => setNewHabitName(e.target.value)}
                     />
